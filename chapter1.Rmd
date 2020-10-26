@@ -1,6 +1,5 @@
 
 # About the project
-## by Kwabena Adu-Ababio 
 **Question 2**
 *Write a short description about the course and add a link to your GitHub repository here.*
 
