@@ -16,7 +16,7 @@ dim(lrn14)
 str(lrn14)
 #Currently data file has 183 observations with 60 variables
 
-#*Q3*: Data wrangling
+#**Q3**: Data wrangling
 # divide each number in a vector
 c(1,2,3,4,5) / 2
 
@@ -66,6 +66,15 @@ colnames(learning2014)
 
 # select rows where points is greater than zero
 learning2014 <- filter(learning2014, points > 0)
-dim(learning2014)
 
 #After data wrangling dataset now has 166 observations with 7 variables
+dim(learning2014)
+
+#**Q4**: Set working directory, save then recal  data
+setwd("~/R/win-library/4.0/IODS-project")
+
+write.csv(learning2014, file = "learning2014.csv", row.names = FALSE)
+
+read.csv("learning2014.csv")
+str(learning2014)
+head(learning2014)
