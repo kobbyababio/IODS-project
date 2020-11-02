@@ -1,5 +1,5 @@
 # Regression Analysis
-#Tasks
+## Tasks
 
 *Describe the work you have done this week and summarize your learning.*
 - Describe your work and results clearly. 
@@ -22,5 +22,16 @@ dim(learning2014)
 date()
 ```
 The data set currently contains 166 observations (information about 166 students) and 7 variables (age, gender, attitude, deep, stra, points). This came from a larger data file containing 183 observations with 60 variables. Please refer to [this link](https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS3-meta.txt) to find more details.
+
+**Q2: Visualization and Summary**
+```{r}
+# visualization of the data set
+# code from datacamp
+ggpairs(learning2014, mapping=aes(col=gender, alpha=0.3), lower=list(combo=wrap("facethist", bins=20)))
+# summary the data set
+summary(learning2014)
+```
+
+From data visualizations there are no strong correlations between the variables of interest (columns). The highest positive correlation is between attitude and points (44%) whiles the highest negative correlation is between deep and surf (-32%). The distributions are similar to Gaussian distributions. We see more females in the data than males.
 
 
