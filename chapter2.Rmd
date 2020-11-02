@@ -1,13 +1,26 @@
-# Insert chapter 2 title here
+# Regression Analysis
+#Tasks
 
 *Describe the work you have done this week and summarize your learning.*
-
 - Describe your work and results clearly. 
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
 - Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
 
+*Preamble*
 ```{r}
+# load packages
+library(dplyr)
+library(ggplot2)
+library(GGally)
+`````
+
+**Q1: Loading Dataset**
+```{r}
+learning2014 <- read.csv("~/R/win-library/4.0/IODS-project/learning2014.csv")
+str(learning2014)
+dim(learning2014)
 date()
 ```
+The data set currently contains 166 observations (information about 166 students) and 7 variables (age, gender, attitude, deep, stra, points). This came from a larger data file containing 183 observations with 60 variables. Please refer to [this link](https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS3-meta.txt) to find more details.
 
-Here we go again...
+
