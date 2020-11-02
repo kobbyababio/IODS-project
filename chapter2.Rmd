@@ -53,4 +53,12 @@ reg_model1 = lm(points ~ attitude, data=learning2014)
 summary(reg_model1)
 ```
 
-According to the summary of the new fitted model, we could see that points=11.6372+3.5255∗attitude. The multiple R squared measures how much of the variability in the dependent variable (points) is caused by the variability in the independent variables (attitude, stra and surf). In model 1 it is 21% and in model 2 it is 19.1%. In the first model, there is a prediction that all other things held constant as points increase by 1 score, attitude and stra increase by 3.4 and 0.9 respectively but surf reduces by 0.6. In the second model, there is a prediction that as points increase by 1 score, attitude will increase by 3.5, holding other factors constant.
+According to the summary of the new fitted model, we could see that points=11.6372+3.5255∗attitude. The multiple R squared measures how much of the variability in the dependent variable (points) is caused by the variability in the independent variables (attitude, stra and surf). In model 1 it is 21% and in model 2 it is 19.1%. This demonstrates that attitude is not a strong factor for obtaining good marks. In the first model, there is a prediction that all other things held constant as points increase by 1 score, attitude and stra increase by 3.4 and 0.9 respectively but surf reduces by 0.6. In the second model, there is a prediction that as points increase by 1 score, attitude will increase by 3.5, holding other factors constant.
+
+**Q5: Diagnostic Plots**
+```{r}
+# show the validation plots
+par(mfrow=c(2,2))
+plot(reg_model1, which=c(1,2,5))
+```
+
