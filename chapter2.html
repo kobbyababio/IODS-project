@@ -451,7 +451,7 @@ str(learning2014)</code></pre>
 <pre class="r"><code>dim(learning2014)</code></pre>
 <pre><code>## [1] 166   7</code></pre>
 <pre class="r"><code>date()</code></pre>
-<pre><code>## [1] &quot;Tue Nov 03 00:19:46 2020&quot;</code></pre>
+<pre><code>## [1] &quot;Tue Nov 03 00:49:14 2020&quot;</code></pre>
 <p>The data set currently contains 166 observations (information about 166 students) and 7 variables (age, gender, attitude, deep, stra, points). This came from a larger data file containing 183 observations with 60 variables. Please refer to <a href="https://www.mv.helsinki.fi/home/kvehkala/JYTmooc/JYTOPKYS3-meta.txt">this link</a> to find more details.</p>
 <p><strong>Q2: Visualization and Summary</strong></p>
 <pre class="r"><code># visualization of the data set
@@ -475,6 +475,57 @@ summary(learning2014)</code></pre>
 ##  3rd Qu.:3.625   3rd Qu.:3.167   3rd Qu.:27.75  
 ##  Max.   :5.000   Max.   :4.333   Max.   :33.00</code></pre>
 <p>From data visualizations there are no strong correlations between the variables of interest (columns). The highest positive correlation is between attitude and points (44%) whiles the highest negative correlation is between deep and surf (-32%). The distributions are similar to Gaussian distributions. We see more females in the data than males.</p>
+<p><strong>Q3 &amp; Q4: Fit A Regression Model</strong></p>
+<pre class="r"><code># fit a multiple linear regression model
+reg_model = lm(points ~ attitude + stra + surf, data=learning2014)
+
+# summary the fitted model
+summary(reg_model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = points ~ attitude + stra + surf, data = learning2014)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -17.1550  -3.4346   0.5156   3.6401  10.8952 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  11.0171     3.6837   2.991  0.00322 ** 
+## attitude      3.3952     0.5741   5.913 1.93e-08 ***
+## stra          0.8531     0.5416   1.575  0.11716    
+## surf         -0.5861     0.8014  -0.731  0.46563    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.296 on 162 degrees of freedom
+## Multiple R-squared:  0.2074, Adjusted R-squared:  0.1927 
+## F-statistic: 14.13 on 3 and 162 DF,  p-value: 3.156e-08</code></pre>
+<p>According to the summary of the fitted model, we could see that points=11.0171+3.3952∗attitude+0.8531∗stra−0.5861∗surf. stra and surf do not show a statistically significant relationships with points.</p>
+<p>F-statistic (p-value) is used to check the significance.</p>
+<pre class="r"><code># remove stra and surf to fit a new model
+reg_model1 = lm(points ~ attitude, data=learning2014)
+# summary the new model
+summary(reg_model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = points ~ attitude, data = learning2014)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.9763  -3.2119   0.4339   4.1534  10.6645 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  11.6372     1.8303   6.358 1.95e-09 ***
+## attitude      3.5255     0.5674   6.214 4.12e-09 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.32 on 164 degrees of freedom
+## Multiple R-squared:  0.1906, Adjusted R-squared:  0.1856 
+## F-statistic: 38.61 on 1 and 164 DF,  p-value: 4.119e-09</code></pre>
+<p>According to the summary of the new fitted model, we could see that points=11.6372+3.5255∗attitude. The multiple R squared measures how much of the variability in the dependent variable (points) is caused by the variability in the independent variables (attitude, stra and surf). In model 1 it is 21% and in model 2 it is 19.1%. In the first model, there is a prediction that all other things held constant as points increase by 1 score, attitude and stra increase by 3.4 and 0.9 respectively but surf reduces by 0.6. In the second model, there is a prediction that as points increase by 1 score, attitude will increase by 3.5, holding other factors constant.</p>
 </div>
 </div>
 

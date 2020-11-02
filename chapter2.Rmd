@@ -34,4 +34,23 @@ summary(learning2014)
 
 From data visualizations there are no strong correlations between the variables of interest (columns). The highest positive correlation is between attitude and points (44%) whiles the highest negative correlation is between deep and surf (-32%). The distributions are similar to Gaussian distributions. We see more females in the data than males.
 
+**Q3 & Q4: Fit A Regression Model**
+```{r}
+# fit a multiple linear regression model
+reg_model = lm(points ~ attitude + stra + surf, data=learning2014)
 
+# summary the fitted model
+summary(reg_model)
+```
+According to the summary of the fitted model, we could see that points=11.0171+3.3952∗attitude+0.8531∗stra−0.5861∗surf. stra and surf do not show a statistically significant relationships with points.
+
+F-statistic (p-value) is used to check the significance.
+
+```{r}
+# remove stra and surf to fit a new model
+reg_model1 = lm(points ~ attitude, data=learning2014)
+# summary the new model
+summary(reg_model1)
+```
+
+According to the summary of the new fitted model, we could see that points=11.6372+3.5255∗attitude. The multiple R squared measures how much of the variability in the dependent variable (points) is caused by the variability in the independent variables (attitude, stra and surf). In model 1 it is 21% and in model 2 it is 19.1%. In the first model, there is a prediction that all other things held constant as points increase by 1 score, attitude and stra increase by 3.4 and 0.9 respectively but surf reduces by 0.6. In the second model, there is a prediction that as points increase by 1 score, attitude will increase by 3.5, holding other factors constant.
