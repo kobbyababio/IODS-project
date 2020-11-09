@@ -4,6 +4,7 @@
 library(dplyr)
 library(ggplot2)
 library(GGally)
+library(tidyr)
 
 # Data source: UCI Machine Learning Repository (http://archive.ics.uci.edu/ml/dataset)
 # Metadata available at: https://archive.ics.uci.edu/ml/datasets/Student+Performance
@@ -74,6 +75,8 @@ pormath <- por_id %>%
   )
 #glimpse of joined and modified dataset
 glimpse(pormath)
+# use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
+gather(pormath) %>% glimpse
 
 # Save created data to folder 'data' as an Excel worksheet
 library(openxlsx)

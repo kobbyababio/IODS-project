@@ -14,6 +14,7 @@ library(dplyr)
 library(ggplot2)
 library(GGally)
 library(openxlsx)
+library(tidyr)
 `````
 
 **Q2: Loading Dataset**
@@ -24,3 +25,21 @@ colnames(pormath)
 date()
 ```
 This data approach student achievement in secondary education of two Portuguese schools. The data attributes include student grades, demographic, social and school related features) and it was collected by using school reports and questionnaires. Two datasets are provided regarding the performance in two distinct subjects: Mathematics (mat) and Portuguese language (por). Please refer to [this link](https://archive.ics.uci.edu/ml/datasets/Student+Performance) to find more details.
+
+**Q3: Chosen Vars and hypothesis**
+
+The four interesting variables I have chosen are age (age), extra educational support (schoolsup),  free time after school (freetime) and weekly study time (studytime). I draw the following hypothesis; expect a positive coefficient between alcohol consumption and age as legal age for drinking alcohol is high; expect negative coefficient between alcohol consumption and extra education support as less time is spent for leisure (drinking); expect positive coefficient between alcohol consumption and free time after school as more time is spend on leisure (drinking) and lastly expect a negative coefficient between alcohol consumption and study time as less time is spent on leisure (drinking) is more time is committed to studying.
+
+**Q4: Visualization and relationships**
+```{r}
+g1 <- ggplot(data = pormath, aes(x = age , fill = high_use))
+g1 + geom_bar()+ facet_wrap("high_use")
+g2 <- ggplot(data = pormath, aes(x = schoolsup , fill = high_use))
+g2 + geom_bar()+ facet_wrap("high_use")
+g3 <- ggplot(data = pormath, aes(x = freetime , fill = high_use))
+g3 + geom_bar()+ facet_wrap("high_use")
+g4 <- ggplot(data = pormath, aes(x = studytime , fill = high_use))
+g4 + geom_bar()+ facet_wrap("high_use")
+```
+
+Bar plots are used to graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (high_use). It is generally seen from the variables chosen that students in the sample are not very heavy alcohol consumers. For age we see more students in the 'FALSE' category as they get older. Although some heavy alcohol consumption is recorded in the 'TRUE' category it does not match up to the alternate category. We may need more tests to confirm the initial hypothesis For extra school support it is seen that in the 'TRUE' category this is a significant increase when there is no extra support; confirming the initial hypothesis. For free time we see that in the 'TRUE' category, there is a rise in alcohol consumption when free time increases. This confirms the hypothesis. For study time it is seen that alcohol consumption decreases as study time increases as seen in the 'TRUE' category. It is also observed that there is more mass in the 'FALSE' category pointing to the fact that more students spend more time on studying.
