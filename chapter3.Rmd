@@ -1,0 +1,16 @@
+# Logistic regression
+## Tasks
+
+*Data Wrangling and Analysis.*
+- Describe your work and results clearly. 
+- Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
+- Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
+
+*Preamble*
+```{r}
+# load packages
+library(dplyr)
+library(ggplot2)
+library(GGally)
+`````
+
