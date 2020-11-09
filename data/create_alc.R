@@ -1,9 +1,6 @@
 #Kwabena Adu-Ababio, 09/11/2020
-
+# This script extracts and combines two datasets from the UCI Machine Learning Repository 
 # Install and load packages
-install.packages ("dplyr")
-install.packages ("ggplot2")
-install.packages ("GGally")
 library(dplyr)
 library(ggplot2)
 library(GGally)
@@ -75,6 +72,8 @@ pormath <- por_id %>%
     high_use = alc_use > 2,
     cid=3000+row_number()
   )
+#glimpe of joined and modified dataset
+glimpse(pormath)
 
 # Save created data to folder 'data' as an Excel worksheet
 library(openxlsx)
