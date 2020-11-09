@@ -72,9 +72,12 @@ pormath <- por_id %>%
     high_use = alc_use > 2,
     cid=3000+row_number()
   )
-#glimpe of joined and modified dataset
+#glimpse of joined and modified dataset
 glimpse(pormath)
 
 # Save created data to folder 'data' as an Excel worksheet
 library(openxlsx)
 write.xlsx(pormath,file="~/R/win-library/4.0/IODS-project/data/pormath.xlsx")
+
+#Recall created data for check
+pormath <- read_excel("data/pormath.xlsx")
