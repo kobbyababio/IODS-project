@@ -32,6 +32,7 @@ The four interesting variables I have chosen are age (age), extra educational su
 
 **Q4: Visualization and relationships**
 ```{r}
+#Bar plots
 g1 <- ggplot(data = pormath, aes(x = age , fill = high_use))
 g1 + geom_bar()+ facet_wrap("high_use")
 g2 <- ggplot(data = pormath, aes(x = schoolsup , fill = high_use))
@@ -40,6 +41,19 @@ g3 <- ggplot(data = pormath, aes(x = freetime , fill = high_use))
 g3 + geom_bar()+ facet_wrap("high_use")
 g4 <- ggplot(data = pormath, aes(x = studytime , fill = high_use))
 g4 + geom_bar()+ facet_wrap("high_use")
+
+#Box plots
+g1 <- ggplot(pormath, aes(x = high_use, y = age ))
+g1 + geom_boxplot() + ylab("age")
+g3 <- ggplot(pormath, aes(x = high_use, y = freetime ))
+g3 + geom_boxplot() + ylab("Free time")
+g4 <- ggplot(pormath, aes(x = high_use, y = studytime ))
+g4 + geom_boxplot() + ylab("Study time")
+
+
+
 ```
 
-Bar plots are used to graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (high_use). It is generally seen from the variables chosen that students in the sample are not very heavy alcohol consumers. For age we see more students in the 'FALSE' category as they get older. Although some heavy alcohol consumption is recorded in the 'TRUE' category it does not match up to the alternate category. We may need more tests to confirm the initial hypothesis For extra school support it is seen that in the 'TRUE' category this is a significant increase when there is no extra support; confirming the initial hypothesis. For free time we see that in the 'TRUE' category, there is a rise in alcohol consumption when free time increases. This confirms the hypothesis. For study time it is seen that alcohol consumption decreases as study time increases as seen in the 'TRUE' category. It is also observed that there is more mass in the 'FALSE' category pointing to the fact that more students spend more time on studying.
+Bar plots are used to graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (high_use). It is generally seen from the variables chosen that students in the sample are not very heavy alcohol consumers. For age we see more students in the 'FALSE' category as they get older. Although some heavy alcohol consumption is recorded in the 'TRUE' category it does not match up to the alternate category. We however confirm the initial hypothesis with the box plot which shows a huge mass as age increases. For extra school support it is seen that in the 'TRUE' category this is a significant increase when there is no extra support; confirming the initial hypothesis. For free time we see that in the 'TRUE' category, there is a rise in alcohol consumption when free time increases. This confirms the hypothesis. For study time it is seen that alcohol consumption decreases as study time increases as seen in the 'TRUE' category. It is also observed that there is more mass in the 'FALSE' category pointing to the fact that more students spend more time on studying. The initial hypothesis is also confirmed by the box plot.
+
+**Q5: Logistic Regressions**
