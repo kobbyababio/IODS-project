@@ -34,26 +34,43 @@ The four interesting variables I have chosen are age (age), extra educational su
 ```{r}
 #Bar plots
 g1 <- ggplot(data = pormath, aes(x = age , fill = high_use))
-g1 + geom_bar()+ facet_wrap("high_use")
+g1 + geom_bar()+ facet_wrap("high_use")+ ggtitle("Student age by alcohol consumption")
 g2 <- ggplot(data = pormath, aes(x = schoolsup , fill = high_use))
-g2 + geom_bar()+ facet_wrap("high_use")
+g2 + geom_bar()+ facet_wrap("high_use")+ ggtitle("Student Extra support by alcohol consumption")
 g3 <- ggplot(data = pormath, aes(x = freetime , fill = high_use))
-g3 + geom_bar()+ facet_wrap("high_use")
+g3 + geom_bar()+ facet_wrap("high_use")+ ggtitle("Student free time by alcohol consumption")
 g4 <- ggplot(data = pormath, aes(x = studytime , fill = high_use))
-g4 + geom_bar()+ facet_wrap("high_use")
+g4 + geom_bar()+ facet_wrap("high_use")+ ggtitle("Student study time by alcohol consumption")
 
 #Box plots
 g1 <- ggplot(pormath, aes(x = high_use, y = age ))
-g1 + geom_boxplot() + ylab("age")
+g1 + geom_boxplot() + ylab("age")+ ggtitle("Student age by alcohol consumption")
 g3 <- ggplot(pormath, aes(x = high_use, y = freetime ))
-g3 + geom_boxplot() + ylab("Free time")
+g3 + geom_boxplot() + ylab("Free time")+ ggtitle("Student Free time by alcohol consumption")
 g4 <- ggplot(pormath, aes(x = high_use, y = studytime ))
-g4 + geom_boxplot() + ylab("Study time")
-
-
-
+g4 + geom_boxplot() + ylab("Study time")+ ggtitle("Student study time by alcohol consumption")
 ```
 
 Bar plots are used to graphically explore the distributions of your chosen variables and their relationships with alcohol consumption (high_use). It is generally seen from the variables chosen that students in the sample are not very heavy alcohol consumers. For age we see more students in the 'FALSE' category as they get older. Although some heavy alcohol consumption is recorded in the 'TRUE' category it does not match up to the alternate category. We however confirm the initial hypothesis with the box plot which shows a huge mass as age increases. For extra school support it is seen that in the 'TRUE' category this is a significant increase when there is no extra support; confirming the initial hypothesis. For free time we see that in the 'TRUE' category, there is a rise in alcohol consumption when free time increases. This confirms the hypothesis. For study time it is seen that alcohol consumption decreases as study time increases as seen in the 'TRUE' category. It is also observed that there is more mass in the 'FALSE' category pointing to the fact that more students spend more time on studying. The initial hypothesis is also confirmed by the box plot.
 
 **Q5: Logistic Regressions**
+
+```{r}
+m <- glm(high_use ~ age + schoolsup + freetime + studytime, data = pormath, family = "binomial")
+# print out a summary of the model
+summary(m)
+# print out the coefficients of the model
+coef(m)
+# compute odds ratios (OR)
+OR <- coef(m) %>% exp
+# compute confidence intervals (CI)
+confint(m)
+CI<-confint(m) %>% exp
+# print out the odds ratios with their confidence intervals
+cbind(OR, CI)
+
+```
+
+
+According to the summary of the fitted model, we could see that from the coefficients high_use=-4.1682+0.2057∗age-0.1006∗schoolsup+0.32431∗freetime+-0.5920*studytime. All signs for each coefficient confirms the initial hypothesis. All coefficients are statitiscally significant with the exception of ectra support (schoolsup).
+Based on the odd ratio, high_use=0.0155+1.228∗age+0.9046∗schoolsup+1.3831∗freetime+0.553*studytime. For age, freetime and studytime we interpret each variable as a change in the odds ratio when high_use changes by one unit when all other things are held constant. However, with a factor variable line schoolsup, we interpret this in reference to the other category, thus, with reference to students without extra support, the odds ratio of alcohol consumption will decrease by 0.9 for those students who have extra support.
