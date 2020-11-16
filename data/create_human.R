@@ -60,5 +60,9 @@ hd_gii <- inner_join(hd, gii, by = join_by)
 library(openxlsx)
 write.xlsx(hd_gii,file="~/R/win-library/4.0/IODS-project/data/human.xlsx")
 
+<<<<<<< HEAD
 #Recall created data for check (195 observations and 19 variables)
+=======
+#Recall created data for check
+>>>>>>> 2d31e0e82c584f4e21530d25de363bd68ff31d22
 human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx")
