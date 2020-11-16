@@ -15,6 +15,15 @@ library(ggplot2)
 library(GGally)
 library(tidyr)
 library(corrplot)
+library(magrittr)
+library(cluster)
+library(cowplot)
+library(clustree)
+library(dendextend)
+library(factoextra)
+library(FactoMineR)
+library(corrplot)
+library(knitr)
 `````
 
 **Q2: Loading Dataset**
@@ -141,7 +150,66 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 The LDA model does quite well at predicting the correct model. Ideally, we would prefer that all the cases to lie on the diagonal of the cross tab matrix. We see a greater mass of the data lying on the diagonal. The highest misallocation is for 12 cases where the model predicts them as med_high but the data (observed) classifies them as med_low. The lowest misallocation is for 1 case where the model predicts as high but the data (observed) classifies this as med_high.
 
-**Q7:Modeling Distances**
+**Q7a:Modeling Distances**
+```{r}
+data('Boston')
 
+# center and standardize variables
+boston_scaled <- scale(Boston)
 
+# euclidean distance matrix
+dist_eu <- dist(boston_scaled, method = "euclidean")
+
+# look at the summary of the distances
+summary(dist_eu)
+
+# manhattan distance matrix
+dist_man <- dist(boston_scaled, method = 'manhattan')
+
+# look at the summary of the distances
+summary(dist_man)
+
+# summaries of the scaled variables
+summary(boston_scaled)
+
+# class of the boston_scaled object
+class(boston_scaled)
+
+# change the object to data frame
+boston_scaled<-as.data.frame(boston_scaled)
+
+# Reformat as a matrix
+# Subset the first 6 columns and rows and Round the values
+round(as.matrix(dist_eu)[1:6, 1:6], 1)
+```
+
+In the matrix, the value represent the distance between objects. The values on the diagonal of the matrix represent the distance between objects and themselves (which are zero).
+
+**Q7b:K-Means Algorithm**
+```{r}
+#Run k-means algorithm on the dataset
+km <-kmeans(boston_scaled, centers = 2, nstart= 10)
+
+# plot the scaled dataset with clusters
+pairs(boston_scaled [6:10], col = km$cluster)
+
+#Investigate the optimal number of clusters
+set.seed(31)
+# Elbow Method 1
+fviz_nbclust(boston_scaled, kmeans, method = "wss", k.max = 24) + theme_minimal() + ggtitle("the Elbow Method")
+
+#The Gap Statistic Method 2
+gap_stat <- clusGap(boston_scaled, FUN = kmeans, nstart = 30, K.max = 35, B = 50)
+fviz_gap_stat(gap_stat) + theme_minimal() + ggtitle("fviz_gap_stat: Gap Statistic")
+
+#Run k-means algorithm again on the dataset
+km <-kmeans(boston_scaled, centers = 3, nstart= 30)
+
+# plot the scaled dataset with clusters
+pairs(boston_scaled [6:10], col = km$cluster)
+```
+
+As we increase the number of clusters we approach the optimal cluster number. In the elbow method we see how increasing the number of the clusters contribute separating the clusters in a meaningful way, not in a marginal way. The bend indicates that additional clusters beyond the third (3) have little value. Due to poor convergence the Gap Statistic Method gives an optimal of 26. However, we choose the optimal 3 as predicted by the elbow method as this is more realistic.Bear in mind that these clusterd are groups and it is easy to visualize three groups as compared to 26.
+
+No need for bonus points.
 
