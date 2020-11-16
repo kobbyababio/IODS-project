@@ -7,6 +7,17 @@
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
 - Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
 
+*Preamble*
+```{r}
+# load packages
+library(dplyr)
+library(ggplot2)
+library(GGally)
+library(tidyr)
+library(corrplot)
+`````
+
+**Q2: Loading Dataset**
 ```{r}
 # access the MASS package
 library(MASS)
@@ -18,9 +29,75 @@ data("Boston")
 str(Boston)
 dim (Boston)
 ```
-This dataset describes the housing values in the Suburbs of Boston. Please refer to [this link](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html) to find more details about the variables.
+This dataset describes the housing values in the Suburbs of Boston. It contains 506 observations with 14 variables. Please refer to [this link](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html) to find more details about the variables.
 
+**Q3:Data overview**
 ```{r}
-#Data overview
+#Summaries
 summary(Boston)
+
+# calculate the correlation matrix and round it
+cor_matrix<-cor(Boston)
+cor_matrix<-cor(Boston)%>% round(digits = 2)
+
+# print the correlation matrix
+cor_matrix
+
+# visualize the correlation matrix
+corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.cex = 0.6)
+
+```
+
+From the correlation values and plots we can tell the relationships between the variables. There is high positive correlation between  the index of accessibility to radial highways (rad) and full-value property-tax rate per \$10,000 (tax) but negative correlation between lower status of the population (lstat) and median value of owner-occupied homes in \$1000s (medv).
+
+**Q3:Standardize data**
+```{r}
+# center and standardize variables
+boston_scaled <- scale(Boston)
+
+# summaries of the scaled variables
+summary(boston_scaled)
+
+# class of the boston_scaled object
+class(boston_scaled)
+
+# change the object to data frame
+boston_scaled<-as.data.frame(boston_scaled)
+
+# summary of the scaled crime rate
+summary(boston_scaled$crim)
+
+# create a quantile vector of crim and print it
+bins <- quantile(boston_scaled$crim)
+bins
+
+# create a categorical variable 'crime'
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+
+# look at the table of the new factor crime
+table(crime)
+
+# remove original crim from the dataset
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+
+# add the new categorical value to scaled data
+boston_scaled <- data.frame(boston_scaled, crime)
+
+# number of rows in the Boston dataset 
+n <- nrow(boston_scaled)
+
+# choose randomly 80% of the rows
+ind <- sample(n,  size = n * 0.8)
+
+# create train set
+train <- boston_scaled[ind,]
+
+# create test set 
+test <- boston_scaled[-ind,]
+
+# save the correct classes from test data
+correct_classes <- test$crime
+
+# remove the crime variable from test data
+test <- dplyr::select(test, -crime)
 ```
