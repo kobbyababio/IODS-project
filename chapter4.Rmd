@@ -8,5 +8,19 @@
 - Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
 
 ```{r}
+# access the MASS package
+library(MASS)
 
+# load the data
+data("Boston")
+
+# explore the dataset
+str(Boston)
+dim (Boston)
+```
+This dataset describes the housing values in the Suburbs of Boston. Please refer to [this link](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html) to find more details about the variables.
+
+```{r}
+#Data overview
+summary(Boston)
 ```
