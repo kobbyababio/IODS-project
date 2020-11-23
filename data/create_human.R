@@ -63,3 +63,55 @@ write.xlsx(hd_gii,file="~/R/win-library/4.0/IODS-project/data/human.xlsx")
 #Recall created data for check (195 observations and 19 variables)
 
 human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx")
+
+#Continuation--23/11/2020
+str(human)
+dim(human)
+names(human)
+#This data  originates from the United Nations Development Programme. It measures the Human Development Index which was created to emphasize that people and their capabilities should be the ultimate criteria for assessing the development of a country, not economic growth alone. Variables have renamed as shown above.
+library(stringr)
+# Q1:Mutate the data
+# look at the structure of the GNI column in 'human'
+str(human$gni)
+
+# remove the commas from GNI and print out a numeric version of it
+str_replace(human$gni, pattern=",", replace ="")%>%as.numeric(human$gni)
+
+# Q2: Exclude unneeded variables
+keep <- c("ctry", "edu2F", "labF", "expeduc", "lfexp", "gni", "mat.mort", "ado.birth", "rep.parl")
+# select the 'keep' columns
+human <- select(human, one_of(keep))
+
+# print out a completeness indicator of the 'human' data
+complete.cases(human)
+
+# print out the data along with a completeness indicator as the last column
+data.frame(human[-1], comp = complete.cases(human))
+
+#Q3: Remove rows with missing values
+human <- filter(human, complete.cases(human))
+str(human)
+
+#Q4: Remove regions observations
+# look at the last 10 observations
+tail(human, 10)
+
+# last indice we want to keep
+last <- nrow(human) - 7
+
+# choose everything until the last 7 observations
+human<- human[1:last, ]
+
+#Q5: Removing country variable
+# add countries as rownames
+rownames(human) <- human$ctry
+
+# remove the Country variable
+human <- select(human, -ctry)
+dim(human)
+
+#Saving new data with row names
+write.xlsx(hd_gii,file="~/R/win-library/4.0/IODS-project/data/human.xlsx", rowNames = TRUE)
+
+#Recall created data for check (195 observations and 19 variables)
+human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx")
