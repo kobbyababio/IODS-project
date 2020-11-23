@@ -26,7 +26,7 @@ library(corrplot)
 library(knitr)
 `````
 
-**Q2: Loading Dataset**
+## Q2: Loading Dataset
 ```{r}
 # access the MASS package
 library(MASS)
@@ -40,7 +40,7 @@ dim (Boston)
 ```
 This dataset describes the housing values in the Suburbs of Boston. It contains 506 observations with 14 variables. Please refer to [this link](https://stat.ethz.ch/R-manual/R-devel/library/MASS/html/Boston.html) to find more details about the variables.
 
-**Q3:Data overview**
+## Q3:Data overview
 ```{r}
 #Summaries
 summary(Boston)
@@ -59,7 +59,7 @@ corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.c
 
 From the correlation values and plots we can tell the relationships between the variables. There is high positive correlation between  the index of accessibility to radial highways (rad) and full-value property-tax rate per \$10,000 (tax) but negative correlation between lower status of the population (lstat) and median value of owner-occupied homes in \$1000s (medv). The distribution of the variables are also not normal. The means are scattered.
 
-**Q3:Standardize data**
+## Q3:Standardize data
 ```{r}
 # center and standardize variables
 boston_scaled <- scale(Boston)
@@ -108,7 +108,7 @@ test <- boston_scaled[-ind,]
 
 From the standardization its seen that the variables now follow a standard normal distribution. All means are now zero.
 
-**Q5:linear discriminant analysis**
+## Q5:linear discriminant analysis
 ```{r}
 lda.fit <- lda(crime ~ ., data = train)
 
@@ -133,7 +133,7 @@ plot(lda.fit, dimen = 2, col = classes, pch = classes)
 lda.arrows(lda.fit, myscale = 1)
 ```
 
-**Q6:Model prediction**
+## Q6:Model prediction
 ```{r}
 # save the correct classes from test data
 correct_classes <- test$crime
@@ -150,7 +150,7 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 The LDA model does quite well at predicting the correct model. Ideally, we would prefer that all the cases to lie on the diagonal of the cross tab matrix. We see a greater mass of the data lying on the diagonal. The highest misallocation is for 12 cases where the model predicts them as med_high but the data (observed) classifies them as med_low. The lowest misallocation is for 1 case where the model predicts as high but the data (observed) classifies this as med_high.
 
-**Q7a:Modeling Distances**
+## Q7a:Modeling Distances
 ```{r}
 data('Boston')
 
@@ -185,7 +185,7 @@ round(as.matrix(dist_eu)[1:6, 1:6], 1)
 
 In the matrix, the value represent the distance between objects. The values on the diagonal of the matrix represent the distance between objects and themselves (which are zero).
 
-**Q7b:K-Means Algorithm**
+## Q7b:K-Means Algorithm
 ```{r}
 #Run k-means algorithm on the dataset
 km <-kmeans(boston_scaled, centers = 2, nstart= 10)
