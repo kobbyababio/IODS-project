@@ -26,5 +26,68 @@ dim(human)
 ggpairs(human)
 # compute the correlation matrix and visualize it with corrplot
 cor(human)
-
+summary(human)
 ```
+The 'human' dataset originates from the United Nations Development Programme. It contains 155 observations with 8 variables. Please refer to [this link](http://hdr.undp.org/sites/default/files/hdr2015_technical_notes.pdf) for additional information. For a technical overview of the variables see information on [calculating the human development indices](http://hdr.undp.org/sites/default/files/hdr2015_technical_notes.pdf).
+We observe somewhat Gaussian distributions for Female labour force participation and expected years of education. The other variables have distributions that are heavily skewed. We observe high positive correlations between life expectancy at birth and expected education (0.79) as well as for Adolescent Birth Rate and Maternal Mortality Ratio (0.76). Low/negative is between Maternal Mortality Ratio and life expectancy at birth (-0.86) as well as between Adolescent Birth Rate and life expectancy at birth (-0.73) 
+
+## Q2: Principal Component Analysis (PCA)
+```{r}
+# perform principal component analysis (with the SVD method)
+pca_human <- prcomp(human)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human, choices = 1:2, cex = c(0.8, 1), col = c("grey40", "deeppink2"))
+```
+
+## Q3: Standardize and repeat
+```{r}
+# standardize the variables
+human_std <- scale(human)
+
+# print out summaries of the standardized variables
+summary(human_std)
+
+# perform principal component analysis again
+pca_human1 <- prcomp(human_std)
+
+# draw a biplot of the principal component representation and the original variables
+biplot(pca_human1, choices = 1:2, cex = c(0.8, 1), col = c("grey40", "deeppink2"))
+```
+
+The two biplots are very different which is mainly due to the fact that the data is normalized with mean 0 and variance constant. It is important to note that the graphs display the multiple correlations between the original features of the variables and the principal components as displayed in a lower 2 dimensional representation. The arrows show the connections between the original variables and the Principal components. When the data is not standardized, we can see the obvious negative relationship only between Maternal Mortality Ratio and Gross National Income per Capita. However, when data is standardized we can tell the relationships between all the variables in the dataset which conforms to theory. For instance, it is natural to see positive relations between Adolescent Birth Rate and Maternal Mortality Ratio as well as between Female Population with Secondary Education and Expected Years of Education. This is seen also from the biplots. For negative relationships, as we would see in the real world, the standardized data also shows inverse relations between Gross National Income per Capita and Adolescent Birth Rate/Maternal Mortality Ratio as well as Expected Years of Education and Adolescent Birth Rate/Maternal Mortality Ratio.
+
+## Q4: Interpretations of first two PC dimensions 
+The extent or direction to which the features (variables) point in the biplot tells which principal component contributes most to this magnitude. When the data is standardized, we observe that Percentage Representation in Parliament and Female labour force participation are mainly influenced by the first principal component (PC1) whiles the rest of the variables are mainly influenced by the second principal component (PC2)
+
+## Q5: Multiple Correspondence Analysis (MCA)
+```{r}
+# access the FactoMineR package
+library (FactoMineR)
+# load the data
+data("tea")
+# explore the dataset
+str(tea)
+dim (tea)
+
+# column to keep in the dataset
+tea_time <- dplyr::select(tea, c("Tea", "How", "how", "sugar", "where", "lunch"))
+
+# look at the summaries and structure of the data
+summary(tea_time)
+str(tea_time)
+
+# visualize the dataset
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+# multiple correspondence analysis
+mca <- MCA(tea_time, graph = FALSE)
+
+# summary of the model
+summary(mca)
+
+# visualize MCA
+plot(mca, invisible=c("ind"), habillage = "quali")
+```
+
+From the output of the MCA factor map we discover interesting results. The most telling one is that individuals who drink Earl Grey usually tke it with milk and sugar as compared to those who take Black or Green tea. Also we see that tea bags are more likely to be bought in chain stores than in tea shops. Moreover, Earl Grey and Black tea are likely to be bought in a chain store than in a tea shop. 
