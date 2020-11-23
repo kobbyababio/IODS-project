@@ -14,15 +14,17 @@ library(dplyr)
 library(ggplot2)
 library(GGally)
 library(tidyr)
-library(corrplot)
-library(cluster)
 library(openxlsx)
 library(corrplot)
 library(knitr)
 ```
 
-## Q2: Loading Dataset
+## Q1: Loading Dataset & graphical overview
 ```{r}
-human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx")
+human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx", rowNames = TRUE)
+dim(human)
+ggpairs(human)
+# compute the correlation matrix and visualize it with corrplot
+cor(human)
 
 ```
