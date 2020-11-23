@@ -1,10 +1,11 @@
 #Kwabena Adu-Ababio, 16/11/2020
 # This script extracts and combines two datasets from the UCI Machine Learning Repository 
 # Install and load packages
-library(dplyr)
+library(dplyr) 
 library(ggplot2)
 library(GGally)
 library(tidyr)
+library(magrittr)
 
 # Metadata available at: http://hdr.undp.org/en/content/human-development-index-hdi
 # Technical notes at : http://hdr.undp.org/sites/default/files/hdr2015_technical_notes.pdf
@@ -75,18 +76,12 @@ library(stringr)
 str(human$gni)
 
 # remove the commas from GNI and print out a numeric version of it
-str_replace(human$gni, pattern=",", replace ="")%>%as.numeric(human$gni)
+human$gni <- as.numeric(gsub(",",".",human$gni))
 
 # Q2: Exclude unneeded variables
 keep <- c("ctry", "edu2F", "labF", "expeduc", "lfexp", "gni", "mat.mort", "ado.birth", "rep.parl")
 # select the 'keep' columns
 human <- select(human, one_of(keep))
-
-# print out a completeness indicator of the 'human' data
-complete.cases(human)
-
-# print out the data along with a completeness indicator as the last column
-data.frame(human[-1], comp = complete.cases(human))
 
 #Q3: Remove rows with missing values
 human <- filter(human, complete.cases(human))
@@ -111,7 +106,8 @@ human <- select(human, -ctry)
 dim(human)
 
 #Saving new data with row names
-write.xlsx(hd_gii,file="~/R/win-library/4.0/IODS-project/data/human.xlsx", rowNames = TRUE)
+write.xlsx(human,file="~/R/win-library/4.0/IODS-project/data/human.xlsx", rowNames = TRUE)
 
-#Recall created data for check (195 observations and 19 variables)
-human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx")
+#Recall created data for check (155 observations and 8 variables)
+human <- read.xlsx("~/R/win-library/4.0/IODS-project/data/human.xlsx", rowNames = TRUE)
+dim(human)
