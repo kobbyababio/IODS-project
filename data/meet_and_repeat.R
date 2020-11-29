@@ -1,4 +1,4 @@
-#Kwabena Adu-Ababio, 29/11/2020
+#Kwabena Adu-Ababio, 30/11/2020
 # This script extracts and combines two datasets from the the GitHub repository of MABS
 # Install and load packages
 library(dplyr) 
