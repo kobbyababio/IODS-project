@@ -38,5 +38,11 @@ output:
 
 ***
 
-(more chapters to be added similarly as we proceed with the course!)
+```{r child = "chapter6.Rmd"}
+```
+
+***
+
+
+(Final Chapters Added at the end of the course!)
 
