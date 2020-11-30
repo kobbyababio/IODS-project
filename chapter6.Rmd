@@ -178,7 +178,7 @@ In this part we go a little deeper to the analysis comparing to the Part 1. As i
 
 To that end, we use Linear Mixed Effects Models for repeated measures data. To begin to see how linear mixed effects models are applied in practice, we shall use some data from Davis (2002): “Here 40 male subjects were randomly assigned to one of two treatment groups and each subject was rated on the brief psychiatric rating scale (BPRS) measured before treatment began (week 0) and then at weekly intervals for eight weeks. The BPRS assesses the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity; each of these is rated from one (not present) to seven (extremely severe). The scale is used to evaluate patients suspected of having schizophrenia.”
 
-We now describre the data in the similar way as for RATS data. The summaries and structure and a plot for the treatment group and control group is given. We observe the following
+We now describe the data in the similar way as for RATS data. The summaries and structure and a plot for the treatment group and control group is given. We observe the following
 
 the BPRS score of almost all the men is decreasing over the eight weeks of the study. -the men who have higher BPRS values at the beginning tend to have higher values throughout the study.
 there are substantial individual differences and variability appears to decrease with time.
