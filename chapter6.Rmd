@@ -29,12 +29,18 @@ dim(BPRSL)
 dim(RATSL)
 
 #For graphs & analysis, SWAP CH8 data for CH9 and vice versa.
+
+# Factor ID & Group
+RATSL$ID <- factor(RATSL$ID)
+RATSL$Group <- factor(RATSL$Group)
+
+# Take a glimpse at the RATSL data
+glimpse(RATSL)
 ```
 
 ## Figure 8.1 with RATSL
-
 ```{r}
-p1 <- ggplot(RATSL, aes(x = Time, y = Weight, linetype = WD))
+p1 <- ggplot(RATSL, aes(x = Time, y = Weight, linetype = ID))
 p2 <- p1 + geom_line() + scale_linetype_manual(values = rep(1:10, times=4))
 p3 <- p2 + facet_grid(. ~ Group, labeller = label_both)
 p4 <- p3 + theme_bw() + theme(legend.position = "none")
@@ -56,7 +62,7 @@ p6 <- p5 + theme(panel.grid.major = element_blank(), panel.grid.minor = element_
 p6
 ```
 
-We observe the BPRS scale and notice that  the BPRS score of almost all the men is decreasing over the eight weeks of the study. This is a general trend with the treatment groups.
+We observe the BPRS scale and notice that  the BPRS score of almost all the men is decreasing over the eight weeks of the study. This is a general trend with the treatment group.
 
 ## Figure 8.2 with RATSL
 
@@ -67,7 +73,7 @@ RATSL <- RATSL %>%
   mutate( stdweight = (Weight - mean(Weight))/sd(Weight) ) %>%
   ungroup()
 glimpse(RATSL)
-p1 <- ggplot(RATSL, aes(x = Time, y = stdweight, linetype = WD))
+p1 <- ggplot(RATSL, aes(x = Time, y = stdweight, linetype = ID))
 p2 <- p1 + geom_line() + scale_linetype_manual(values = rep(1:10, times=4))
 p3 <- p2 + facet_grid(. ~ Group, labeller = label_both)
 p4 <- p3 + theme_bw() + theme(legend.position = "none")
@@ -78,10 +84,58 @@ p6
 
 Standardizing the weights normalizes the variables. However, the magnitudes observed above do not change with Group 2 recording the highest followed by Group 3 then Group 1.
 
-## Figure 9.2 with BPRSL
-
 ## Figure 8.3 with RATSL
 
-## Figure 9.4 with BPRSL
+```{r}
+# Number of Times, baseline :
+n <- RATSL$Time %>% unique() %>% length()
+# Make a summary data:
+RATSS <- RATSL %>%
+  group_by(Group, Time) %>%
+  summarise( mean=mean(Weight), se=sd(Weight)/sqrt(n) ) %>%
+  ungroup()
+glimpse(RATSS)
 
-## Figure 8.4 with RATSL
+p1 <- ggplot(RATSS, aes(x = Time, y = mean, linetype = Group, shape = Group))
+p2 <- p1 + geom_line() + scale_linetype_manual(values = c(1,2,3))
+p3 <- p2 + geom_point(size=3) + scale_shape_manual(values = c(1,2,3))
+p4 <- p3 + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3)
+p5 <- p4 + theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+p6 <- p5 + theme(legend.position = c(0.8,0.5))
+p7 <- p6 + scale_y_continuous(name = "mean(weight) +/- se(weight)")
+p7
+```
+
+
+```{r}
+# Create a summary data by Group and ID with mean as the summary variable (ignoring baseline time period 1).
+RATSL8S <- RATSL %>%
+  filter(Time > 1) %>%
+  group_by(Group, ID) %>%
+  summarise( mean=mean(Weight) ) %>%
+  ungroup()
+
+# Glimpse the data
+glimpse(RATSL8S)
+
+# Draw a boxplot of the mean versus treatment
+ggplot(RATSL8S, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight), time periods 2-64")
+```
+
+```{r}
+# Create a new data by filtering the outlier and adjust the ggplot code the draw the plot again with the new data
+RATSL8S1 <- RATSL8S %>%
+  filter(mean < 550)
+
+# Glimpse the data
+glimpse(RATSL8S1)
+
+# Draw a boxplot of the mean versus treatment
+ggplot(RATSL8S1, aes(x = Group, y = mean)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
+  scale_y_continuous(name = "mean(Weight), time periods 2-64")
+```
