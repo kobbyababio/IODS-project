@@ -60,3 +60,7 @@ glimpse(RATS)
 #Saving new data
 write.table(BPRSL,file="~/R/win-library/4.0/IODS-project/data/BPRSL.txt", sep  =" ", row.names = TRUE)
 write.table(RATSL,file="~/R/win-library/4.0/IODS-project/data/RATSL.txt", row.names = TRUE, sep = '\t')
+
+#Recall created data for check
+read.table(file="~/R/win-library/4.0/IODS-project/data/BPRSL.txt", sep  =" ", header = T)
+read.table(file="~/R/win-library/4.0/IODS-project/data/RATSL.txt", header = TRUE, sep = '\t')
