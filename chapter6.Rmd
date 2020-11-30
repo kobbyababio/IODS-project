@@ -56,7 +56,7 @@ p6 <- p5 + theme(panel.grid.major = element_blank(), panel.grid.minor = element_
 p6
 ```
 
-We observe the BPRS scale and notice that  the BPRS score of almost all the men is decreasing over the eight weeks of the study.
+We observe the BPRS scale and notice that  the BPRS score of almost all the men is decreasing over the eight weeks of the study. This is a general trend with the treatment groups.
 
 ## Figure 8.2 with RATSL
 
