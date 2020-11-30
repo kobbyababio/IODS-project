@@ -12,14 +12,13 @@
 # load packages
 library(dplyr)
 library(ggplot2)
-library(GGally)
 library(tidyr)
 library(openxlsx)
 library(corrplot)
 library(knitr)
 ```
 
-## Q1: Loading Dataset & graphical overview
+## Part 1: Loading Dataset & graphical overview
 ```{r}
 BPRSL <- read.table(file="~/R/win-library/4.0/IODS-project/data/BPRSL.txt", sep  =" ", header = T)
 
@@ -27,6 +26,7 @@ RATSL <- read.table(file="~/R/win-library/4.0/IODS-project/data/RATSL.txt", head
 
 dim(BPRSL)
 dim(RATSL)
+summary(RATSL)
 
 #For graphs & analysis, SWAP CH8 data for CH9 and vice versa.
 
@@ -36,6 +36,8 @@ RATSL$Group <- factor(RATSL$Group)
 
 # Take a glimpse at the RATSL data
 glimpse(RATSL)
+# Table 
+kable(RATSL[1:16,])
 ```
 
 ## Figure 8.1 with RATSL
@@ -106,6 +108,7 @@ p7 <- p6 + scale_y_continuous(name = "mean(weight) +/- se(weight)")
 p7
 ```
 
+Group and ID with mean as the summary variable (ignoring baseline time period 1). The box plots of the full data and without the outlier rat are given below.
 
 ```{r}
 # Create a summary data by Group and ID with mean as the summary variable (ignoring baseline time period 1).
@@ -139,3 +142,150 @@ ggplot(RATSL8S1, aes(x = Group, y = mean)) +
   stat_summary(fun = "mean", geom = "point", shape=23, size=4, fill = "white") +
   scale_y_continuous(name = "mean(Weight), time periods 2-64")
 ```
+
+Finally, we perform a two-sample t-test and observe the differences as seen in the boxplots above. We compute the analysis of variance table for the fitted model. We see that the baseline RATS is strongly related to the Rats values taken after treatment (Group) has begun, but there is still no evidence of a treatment (Group) difference even after conditioning on the baseline value.
+
+```{r}
+# Perform a two-sample t-test
+
+# Let us put groups 2 and 3 together in order to run the t-test
+RATSL8S1$Group[which(RATSL8S1$Group==2)] <- 3
+t.test(mean~Group, data = RATSL8S1, var.equal = TRUE)
+```
+
+```{r}
+# Add the baseline from the original data as a new variable to the summary data
+RATSL8S2 <- RATSL8S %>%
+  mutate(baseline = RATSL$Weight[which(RATSL$Time==1)])
+
+# Fit the linear model with the mean as the response 
+fit <- lm(mean ~ baseline + Group, data = RATSL8S2)
+summary(fit)
+```
+
+```{r}
+# Compute the analysis of variance table for the fitted model with anova()
+anova(fit)
+
+kable(anova(fit))
+```
+
+## Analysis of Longitudinal Data Part 2
+
+In this part we go a little deeper to the analysis comparing to the Part 1. As in the course book it says:
+
+“The summary measure approach to the analysis of longitudinal data described in the previous chapter sometimes provides a useful first step in making inferences about the data, but it is really only ever a first step, and a more complete and a more appropriate analysis will involve fitting a suitable model to the data and estimating parameters that link the explanatory variables of interest to the repeated measures of the response variable”
+
+To that end, we use Linear Mixed Effects Models for repeated measures data. To begin to see how linear mixed effects models are applied in practice, we shall use some data from Davis (2002): “Here 40 male subjects were randomly assigned to one of two treatment groups and each subject was rated on the brief psychiatric rating scale (BPRS) measured before treatment began (week 0) and then at weekly intervals for eight weeks. The BPRS assesses the level of 18 symptom constructs such as hostility, suspiciousness, hallucinations and grandiosity; each of these is rated from one (not present) to seven (extremely severe). The scale is used to evaluate patients suspected of having schizophrenia.”
+
+We now describre the data in the similar way as for RATS data. The summaries and structure and a plot for the treatment group and control group is given. We observe the following
+
+the BPRS score of almost all the men is decreasing over the eight weeks of the study. -the men who have higher BPRS values at the beginning tend to have higher values throughout the study.
+there are substantial individual differences and variability appears to decrease with time.
+
+```{r}
+summary(BPRSL)
+# Factor subject & treatment
+BPRSL$subject <- factor(BPRSL$subject)
+BPRSL$treatment <- factor(BPRSL$treatment)
+
+# Take a glimpse at the RATSL data
+glimpse(BPRSL)
+
+# Table 
+kable(BPRSL[1:20,])
+
+# Draw the plot
+ggplot(BPRSL, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(BPRSL$bprs), max(BPRSL$bprs)))
+```
+
+Let us next jump into the regression model.
+
+```{r}
+# create a regression model BPRSL_reg
+BPRSL_reg <- lm(bprs ~ week + treatment, data = BPRSL)
+
+# print out a summary of the model
+summary(BPRSL_reg)
+```
+
+From here we observe that there is a little, unsignificant positive effect of treatment. Moreover, there is a significant negative effect of time.
+
+This model assumes independence of the repeated measures of brps, which is unrealistic. Next we consider the random intercept model. Fitting a random intercept model allows the linear regression fit for each subject to differ in intercept from other subjects.
+
+```{r}
+# dplyr, tidyr, RATS and RATSL are available
+
+# access library lme4
+library(lme4)
+
+# Create a random intercept model
+BPRSL_ref <- lmer(bprs ~ week + treatment + (1 | subject), data = BPRSL, REML = FALSE)
+
+# Print the summary of the model
+summary(BPRSL_ref)
+```
+
+The week fixed effects remain negative and significant as well as the treatment effect is positive but unsignificant. Correlation of fixed effects shows negative effects on both week and treatment.
+
+Next we create a random intercept and random slope model. “Fitting a random intercept and random slope model allows the linear regression fits for each individual to differ in intercept but also in slope. This way it is possible to account for the individual differences in the rats’ growth profiles, but also the effect of time.”
+
+```{r}
+# create a random intercept and random slope model
+BPRSL_ref1 <- lmer(bprs ~ week + treatment + (week | subject), data = BPRSL, REML = FALSE)
+
+# print a summary of the model
+summary(BPRSL_ref1)
+
+# perform an ANOVA test on the two models
+anova(BPRSL_ref1, BPRSL_ref)
+```
+
+From here we observe that there are no very much different to the earlier results; actually all signs and significance remain the same.
+
+Finally, we can fit a random intercept and slope model that allows for a treatment × week interaction.
+
+```{r}
+# create a random intercept and random slope model
+BPRSL_ref2 <- lmer(bprs ~ week * treatment + (week | subject), data = BPRSL, REML = FALSE)
+
+# print a summary of the model
+summary(BPRSL_ref2)
+
+# perform an ANOVA test on the two models
+anova(BPRSL_ref2, BPRSL_ref1)
+
+# draw the plot of BPRSL
+ggplot(BPRSL, aes(x = week, y = bprs, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(BPRSL$bprs), max(BPRSL$bprs))) +
+  scale_x_continuous(name = "Week", breaks = seq(0, 8, 1))
+
+# Create a vector of the fitted values
+Fitted <- fitted(BPRSL_ref2)
+
+# Create a new column fitted to BPRSL
+BPRSL <- BPRSL %>%
+  mutate(Fitted)
+
+# draw the plot of BPRSL
+ggplot(BPRSL, aes(x = week, y = Fitted, linetype = subject)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ treatment, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(BPRSL$bprs), max(BPRSL$bprs))) +
+  scale_x_continuous(name = "Week", breaks = seq(0, 8, 1))
+```
+
+By adding the interaction term the sign of treament changes to negative. the coefficient of the interaction term is positive, but pretty insignificant. The similar effects happen in the correlation of fixed effects.
+
+We fit the model and observe that the the fit is pretty good.
